@@ -2,6 +2,8 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from .models import Product, Order
 
 
@@ -11,9 +13,6 @@ def buy_product(request, product_id):
         return JsonResponse({'error': 'Only POST allowed'}, status=405)
 
     with transaction.atomic():
-        # select_for_update() locks this row until the transaction finishes,
-        # so if two requests hit this at the same time, the second one
-        # has to WAIT until the first one is done — no race condition.
         product = get_object_or_404(
             Product.objects.select_for_update(), id=product_id
         )
@@ -26,6 +25,16 @@ def buy_product(request, product_id):
         product.save()
 
         Order.objects.create(product=product, quantity=1, status='success')
+
+        # Broadcast the new stock count to everyone watching this product
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'stock_{product.id}',
+            {
+                'type': 'stock_update',
+                'remaining_stock': product.stock
+            }
+        )
 
         return JsonResponse({
             'success': True,

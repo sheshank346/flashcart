@@ -14,7 +14,8 @@ SECRET_KEY = 'django-insecure-f2pro9#ns!cgy2twa5sa18lh+q&(l&=oio4e#(f#yyz1r18q7h
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['proclaim-dotted-recopy.ngrok-free.dev', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://proclaim-dotted-recopy.ngrok-free.dev']
 
 INSTALLED_APPS = [
     'daphne',
@@ -78,7 +79,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USER', 'postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '6984'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -105,7 +106,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MAILERS = {
     'default': {

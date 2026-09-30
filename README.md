@@ -217,3 +217,7 @@ This confirms the project runs correctly behind a real reverse proxy and product
 ## License
 
 This project was built as a learning exercise to demonstrate backend concurrency handling and full-stack deployment practices.
+
+## Live Demo
+
+This project can be exposed publicly on demand using ngrok, tunneling through the full Nginx + Gunicorn + Django + PostgreSQL stack running locally. Since this relies on a local machine staying online, it is demoed live rather than hosted at a permanent URL. Available on request for a live walkthrough.
